@@ -665,7 +665,7 @@
             <File>
               <FileName>pacman.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\pacman.c</FilePath>
+              <FilePath>.\Source\pacman\pacman.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1282,7 +1282,7 @@
             <File>
               <FileName>pacman.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\pacman.c</FilePath>
+              <FilePath>.\Source\pacman\pacman.c</FilePath>
             </File>
           </Files>
         </Group>

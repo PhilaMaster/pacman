@@ -12,6 +12,7 @@
 #include "timer.h"
 #include "../GLCD/GLCD.h" 
 #include "../TouchPanel/TouchPanel.h"
+//#include "../pac"
 #include <stdio.h> /*for sprintf*/
 
 /******************************************************************************
@@ -24,11 +25,15 @@
 **
 ******************************************************************************/
 
+extern remainingTime;
+extern score;
+
 void TIMER0_IRQHandler (void)
 {
 	if(LPC_TIM0->IR & 1) // MR0
 	{ 
-		// your code
+		remainingTime--;
+		disegnaTempo();
 		LPC_TIM0->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM0->IR & 2){ // MR1
