@@ -670,6 +670,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>board</GroupName>
+          <Files>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\board\board.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\board\board.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -1283,6 +1298,21 @@
               <FileName>pacman.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\pacman.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>board</GroupName>
+          <Files>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\board\board.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\board\board.h</FilePath>
             </File>
           </Files>
         </Group>

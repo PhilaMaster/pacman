@@ -667,6 +667,42 @@ void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_
     while ( *str != 0 );
 }
 
+#include "math.h"
+void LCD_DrawSphere(uint16_t x, uint16_t y, uint16_t r, uint16_t color) {
+  int dy;  
+	for (dy = -r; dy <= r; dy++) { // Loop through vertical positions
+        int dx = sqrt(r * r - dy * dy); // Calculate horizontal radius at this height
+        LCD_DrawLine(x - dx, y + dy, x + dx, y + dy, color);
+    }
+}
+
+
+void LCD_DrawRhombus(uint16_t x, uint16_t y, uint16_t r, uint16_t color){
+	int dx = r, dy = r, i=0, xmin,xmax;
+	while(i<2*r){
+		if (i<r){
+			xmin = x+r-i;
+			xmax = x+r+i;
+			LCD_DrawLine(xmin,y+i,xmax,y+i,color);
+		}
+		else LCD_DrawLine(xmin+(i%r),y+i,xmax-(i%r),y+i,color);
+		i++;
+	}
+}
+
+void LCD_DrawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color) {
+	LCD_DrawLine(x, y, x+width, y,color); //riga superiore
+	LCD_DrawLine(x, y+height, x+width, y+height,color); //riga inferiore
+	LCD_DrawLine(x,y,x,y+height,color); //riga sinistra
+	LCD_DrawLine(x+width,y,x+width,y+height,color); //riga sinistra
+}
+
+void LCD_DrawFullRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color) {
+  int i;  
+	for (i = 0; i < height; i++) {
+		LCD_DrawLine(x, y+i, x+width, y+i, color);
+	}
+}
 
 
 /*********************************************************************************************************
