@@ -11,6 +11,7 @@
 #include "RIT.h"
 //#include "../led/led.h"
 //#include "../music/music.h"
+#include "pacman/pacman.h"
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
 **
@@ -23,7 +24,7 @@
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
-//extern int func_name(int n);
+extern int lastDirection;
 
 void RIT_IRQHandler (void)
 {			
@@ -38,7 +39,7 @@ static int up=0;
 		up++;
 		switch(up){
 			case 1:
-				// my code
+					lastDirection = UP;
 				break;
 			case 60:	//3sec = 3000ms/50ms = 60, note: rit ticks every 50 msecs
 				// my code
@@ -58,7 +59,7 @@ static int up=0;
 		down++;
 		switch(down){
 			case 1:
-				// my code
+					lastDirection = DOWN;
 				break;
 			default:
 				break;
@@ -74,7 +75,7 @@ static int up=0;
 		left++;
 		switch(left){
 			case 1:
-				// my code
+					lastDirection = LEFT;
 				break;
 			default:
 				break;
@@ -90,7 +91,7 @@ static int up=0;
 		right++;
 		switch(right){
 			case 1:
-				// my code
+					lastDirection = RIGHT;
 				break;
 			default:
 				break;
@@ -100,7 +101,7 @@ static int up=0;
 			right=0;
 	}
 	
-		static int select=0;	
+	static int select=0;	
 	
 	if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){
 		/* Joytick SELECT pressed */
@@ -193,9 +194,17 @@ if(down_2 !=0){
 	}
 */
 
-
-
-
+	//********GESTIONE PERSONAGGIO********
+	static int count = 0;
+	switch(count){
+		case 10://10*50 msec = 500msec
+			spostaPersonaggio();
+			count=0;
+			break;
+		
+	}
+	count++;
+	
 	reset_RIT();
   LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
 	

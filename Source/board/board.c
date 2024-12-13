@@ -29,16 +29,16 @@ uint8_t board[BOARD_HEIGHT][BOARD_WIDTH] = {
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
-int getXvalue(int j){return X_OFFSET+j*WIDTH;}
-int getYvalue(int i){return Y_OFFSET+i*HEIGHT;}
+int getX(int j){return X_OFFSET+j*WIDTH;}
+int getY(int i){return Y_OFFSET+i*HEIGHT;}
 
 void primoDisegnoBoard(){
 	int i,j;
 	
 	for (i=0;i<BOARD_HEIGHT;i++)
 		for(j=0;j<BOARD_WIDTH;j++){	
-			int x_start = getXvalue(j);
-			int y_start = getYvalue(i);
+			int x_start = getX(j);
+			int y_start = getY(i);
 			switch(board[i][j]){
 				case WALL:
 					LCD_DrawRect(x_start, y_start, WIDTH, HEIGHT, Blue);
@@ -49,7 +49,7 @@ void primoDisegnoBoard(){
 					break;
 				case PILL:
 					//LCD_DrawRhombus(x_start,y_start, PILL_WIDTH, Yellow);
-					LCD_DrawSphere(x_start+WIDTH/2, y_start+HEIGHT/2, 1, Yellow);
+					LCD_DrawSphere(x_start+WIDTH/2, y_start+HEIGHT/2, 1, Orange);
 			}
 		}
 }

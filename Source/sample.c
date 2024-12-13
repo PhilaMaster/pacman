@@ -13,10 +13,10 @@
 ** Descriptions:            The original version
 **
 **--------------------------------------------------------------------------------------------------------
-** Modified by:             Paolo Bernardi
-** Modified date:           03/01/2020
+** Modified by:             Pasquale Papalia
+** Modified date:           13/12/2024
 ** Version:                 v2.0
-** Descriptions:            basic program for LCD and Touch Panel teaching
+** Descriptions:            pacman extrapoint 1
 **
 *********************************************************************************************************/
 
@@ -36,12 +36,11 @@ int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       */
-	enable_RIT();													/* enable RIT to count 50ms				 */
 	joystick_init();											/* Joystick Initialization            */	
   LCD_Initialization();
 	
 	inizializza();
-	
+	enable_RIT();													/* enable RIT to count 50ms				 */
 	
 	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
 	enable_timer(0);

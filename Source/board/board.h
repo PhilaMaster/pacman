@@ -8,6 +8,8 @@
 #define PILL 0
 #define WALL  1
 #define EMPTY  2
+#define TELEPORT 3
+#define SUPER_PILL 4
 
 #define BOARD_WIDTH 23
 #define BOARD_HEIGHT 25

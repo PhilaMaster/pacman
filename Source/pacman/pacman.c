@@ -1,7 +1,8 @@
 #include "GLCD/GLCD.h" 
 #include "stdio.h"
 #include "board/board.h"
-
+#include "pacman.h"
+#include <stdbool.h>
 void disegna();
 void inizializza();
 
@@ -11,7 +12,12 @@ void disegnaTempo();
 void disegnaScore();
 void disegnaTesto();
 
+//info a schermo
 int remainingTime = 60, score = 0, remainingLives = 1;
+
+//personaggio
+int x=5,y=3, lastDirection = DOWN;
+bool mosso=false;
 
 void inizializzaSchermo(){
 	LCD_Clear(Black);
@@ -19,6 +25,8 @@ void inizializzaSchermo(){
 	GUI_Text(0, 304, (uint8_t *) "Remaining lives: 1            ", Red, White);
 	
 	primoDisegnoBoard();
+	//primo disegno di pacman:
+	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
 }
 
 void disegnaTesto(){
@@ -39,6 +47,29 @@ void disegnaScore(){
 	GUI_Text(56, 0, (uint8_t *)text, Red, White);
 }
 
+void disegnaPacman(){
+	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
+	switch(lastDirection){
+		case UP:
+			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y+1)+HEIGHT/2, PACMAN_RADIUS, Black);
+			break;
+		case LEFT:
+			LCD_DrawSphere(getX(x+1)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+			break;
+		case DOWN:
+			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y-1)+HEIGHT/2, PACMAN_RADIUS, Black);
+			break;
+		case RIGHT:
+			LCD_DrawSphere(getX(x-1)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+			break;
+	}
+}
+
+void fastRefresh(){
+	if (mosso)
+		disegnaPacman();
+}
+
 void inizializza(){
 	int i,j;
 	int count=0;
@@ -56,4 +87,73 @@ void inizializza(){
 	//disegno iniziale
 	inizializzaSchermo();
 	disegnaScore();//solo debug per count pillole
+}
+
+void spostaPersonaggio(){
+	int prevScore = score;
+	switch(lastDirection){
+		case UP:
+			if(board[y-1][x] != WALL){
+				y--;
+				mosso=true;
+				if (board[y][x]==PILL){
+					score+=10;
+					board[y][x]=EMPTY;
+				} 
+				else if (board[y][x]==SUPER_PILL){
+					score+=50;
+					board[y][x]=EMPTY;
+				}
+			}else mosso=false;
+			break;
+		case LEFT:
+			if(board[y][x-1] != WALL){
+				x--;
+				mosso=true;
+				if (board[y][x]==PILL){
+					score+=10;
+					board[y][x]=EMPTY;
+				} 
+				else if (board[y][x]==SUPER_PILL){
+					score+=50;
+					board[y][x]=EMPTY;
+				}
+				else if (board[y][x]==TELEPORT)
+					x=BOARD_WIDTH-1;
+			}else mosso=false;
+			break;
+		case DOWN:
+			if(board[y+1][x] != WALL){
+				y++;
+				mosso=true;
+				if (board[y][x]==PILL){
+					score+=10;
+					board[y][x]=EMPTY;
+				} 
+				else if (board[y][x]==SUPER_PILL){
+					score+=50;
+					board[y][x]=EMPTY;
+				}
+			}else mosso=false;
+			break;
+		case RIGHT:
+			if(board[y][x+1] != WALL){
+				x++;
+				mosso=true;
+				if (board[y][x]==PILL){
+					score+=10;
+					board[y][x]=EMPTY;
+				} 
+				else if (board[y][x]==SUPER_PILL){
+					score+=50;
+					board[y][x]=EMPTY;
+				}
+				else if (board[y][x]==TELEPORT)
+					x=1;
+			
+			}else mosso=false;
+			break;
+	}
+	if (score!=prevScore) disegnaScore();
+	fastRefresh();
 }
