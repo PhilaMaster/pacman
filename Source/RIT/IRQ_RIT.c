@@ -13,6 +13,8 @@
 //#include "../music/music.h"
 #include "pacman/pacman.h"
 #include "board/board.h"
+#include <stdbool.h>
+#include "GLCD/GLCD.h" 
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
 **
@@ -25,6 +27,7 @@
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
+volatile bool pause = false;
 extern int actualDirection, wantedDirection, x, y;
 extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 //TODO possibile miglioramento: aggiungere variabile wantedDirection che diverrà actualDirection (l'attuale lastDirection) solo appena c'è un incrocio
@@ -135,7 +138,21 @@ if(down_0 !=0){
 	if((LPC_GPIO2->FIOPIN & (1<<10)) == 0){
 		switch(down_0){
 			case 2:
-				// your code	
+				pause = !pause;
+				if(pause){
+					GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);
+					disable_timer(0);//fermo il tempo
+				}
+				else{
+					//coordinate della pausa
+					int x1=9,x2=14,y1=10,y2=12;
+					disable_RIT();//perse 2 ore di debug per capire perchè non funzionava ed era il RIT, ci metteva tanto a disegnare =)
+					LCD_FillRegion(getX(x1)+3,getY(y1)+3,getX(x2)-3,getY(y2),Black);//disegno di nero lo sfondo sotto la scritta pausa
+					enable_RIT();
+					refreshBoard(x1,x2,y1,y2);//clear del messaggio di pausa
+					enable_timer(0);//faccio ripartire il tempo
+				}
+			
 				break;
 			default:
 				break;
@@ -221,7 +238,7 @@ if(down_2 !=0){
 					case RIGHT:
 						if(board[y][x+1]!=WALL) actualDirection=wantedDirection; break;
 				}
-			spostaPersonaggio();
+			if (!pause) spostaPersonaggio();
 			count=0;
 			break;
 		

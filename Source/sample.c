@@ -36,11 +36,14 @@ int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       */
-	joystick_init();											/* Joystick Initialization            */	
   LCD_Initialization();
 	
+	
 	inizializza();
+	BUTTON_init();
+	joystick_init();											/* Joystick Initialization            */	
 	enable_RIT();													/* enable RIT to count 50ms				 */
+
 	
 	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
 	enable_timer(0);

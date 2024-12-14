@@ -414,6 +414,13 @@ void LCD_Clear(uint16_t Color)
 		LCD_WriteData(Color);
 	}
 }
+//void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color )
+void LCD_FillRegion(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+{
+	int i;
+  for(i=y0;i<y1;i++)
+		LCD_DrawLine(x0,i,x1,i,color);
+}
 
 /******************************************************************************
 * Function Name  : LCD_BGR2RGB
