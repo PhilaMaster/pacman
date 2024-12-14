@@ -71,10 +71,32 @@ void fastRefresh(){
 		disegnaPacman();
 }
 
+int randomPills[] = {-1,-1,-1,-1,-1,-1};
+
+bool contiene(int v[], int n){
+	int i;
+	for (i=0;i<6;i++)
+		if (v[i] == n)
+			return true;
+	return false;
+}
+void bubblesort(int v[], int n) {
+int i,k;
+int temp;
+for(i = 0; i<n-1; i++) {
+ for(k = 0; k<n-1-i; k++) {
+         if(v[k] > v[k+1]) {
+          temp = v[k];
+          v[k] = v[k+1];
+          v[k+1] = temp;
+         }
+ }
+}
+}
 void inizializza(){
 	int i,j;
 	int count=0;
-	//conto pillole, devono essere 270, solo debug per count pillole
+	//conto pillole, devono essere 270, (solo debug)
     for (i = 1; i < BOARD_HEIGHT - 1; i++) {
         for (j = 1; j < BOARD_WIDTH - 1; j++) {
             if (board[i][j] == PILL){ 
@@ -83,7 +105,27 @@ void inizializza(){
         }
     }
 	score = count;
-	
+	srand(((LPC_ADC->ADGDR>>4) & 0xFFF));
+	//genero casualmente le super pills	
+	j=0;
+	for(i=0;i<6;i++){
+		int r;
+		do{
+			r = rand()%270;
+		}while(contiene(randomPills,r));
+		randomPills[j++]=r;
+	}
+	bubblesort(randomPills,6); //poichè distribuisco le pills in ordine
+	j=0;//itera sul vettore randPills (6)
+	i=0;//itera sull'intera board (WIDTH*HEIGHT)
+	int k=0;//indice che itera sulle pills (270)
+	while(j<6 && i<BOARD_WIDTH*BOARD_HEIGHT){
+		if(board[i/BOARD_WIDTH][i%BOARD_WIDTH] == PILL && randomPills[j]==k++){
+			board[i/BOARD_WIDTH][i%BOARD_WIDTH] = SUPER_PILL;
+			j++;
+		}
+		i++;
+	}
 	
 	//disegno iniziale
 	inizializzaSchermo();

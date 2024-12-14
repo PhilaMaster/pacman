@@ -23,7 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "LPC17xx.h"
 #include "GLCD/GLCD.h" 
-#include "TouchPanel/TouchPanel.h"
+//#include "TouchPanel/TouchPanel.h"
 #include "timer/timer.h"
 #include <stdio.h>
 
@@ -37,6 +37,9 @@ int main(void)
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       */
   LCD_Initialization();
+	
+	ADC_init();	
+	ADC_start_conversion();	//prendo valore per inizializzare seed rand
 	
 	
 	inizializza();

@@ -48,6 +48,10 @@ void refreshBoard(int xStart, int xEnd, int yStart, int yEnd){
 				case PILL:
 					//LCD_DrawRhombus(x_start,y_start, PILL_WIDTH, Yellow);
 					LCD_DrawSphere(getX(j)+WIDTH/2, getY(i)+HEIGHT/2, 1, Orange);
+					break;
+				case SUPER_PILL:
+					LCD_DrawSphere(getX(j)+WIDTH/2, getY(i)+HEIGHT/2, 2, Red);
+					break;
 			}
 		}
 }

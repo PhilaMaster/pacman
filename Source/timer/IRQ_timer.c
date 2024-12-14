@@ -11,7 +11,7 @@
 #include "LPC17xx.h"
 #include "timer.h"
 #include "../GLCD/GLCD.h" 
-#include "../TouchPanel/TouchPanel.h"
+//#include "../TouchPanel/TouchPanel.h"
 //#include "../pac"
 #include <stdio.h> /*for sprintf*/
 
