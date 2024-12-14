@@ -16,8 +16,8 @@ void disegnaTesto();
 int remainingTime = 60, score = 0, remainingLives = 1;
 
 //personaggio
-int x=5,y=3, actualDirection = DOWN, wantedDirection = DOWN;
-bool mosso=false;
+int x=11,y=13, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
+bool mosso=false,teleported=false;
 
 void inizializzaSchermo(){
 	LCD_Clear(Black);
@@ -50,20 +50,32 @@ void disegnaScore(){
 
 void disegnaPacman(){
 	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
+	int drawX,drawY;
 	switch(actualDirection){
 		case UP:
-			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y+1)+HEIGHT/2, PACMAN_RADIUS, Black);
+			drawX=x; drawY=y+1;
 			break;
 		case LEFT:
-			LCD_DrawSphere(getX(x+1)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+			if(!teleported) drawX=x+1; 
+			else {
+				drawX=1;
+				teleported=false;
+			}
+			drawY=y;
 			break;
 		case DOWN:
-			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y-1)+HEIGHT/2, PACMAN_RADIUS, Black);
+			drawX=x; drawY=y-1;
 			break;
 		case RIGHT:
-			LCD_DrawSphere(getX(x-1)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+			if(!teleported) drawX=x-1;
+			else {
+				drawX=BOARD_WIDTH-2;
+				teleported=false;
+			}
+			drawY=y;
 			break;
 	}
+	LCD_DrawSphere(getX(drawX)+WIDTH/2, getY(drawY)+HEIGHT/2, PACMAN_RADIUS, Black);
 }
 
 void fastRefresh(){
@@ -161,8 +173,10 @@ void spostaPersonaggio(){
 					score+=50;
 					board[y][x]=EMPTY;
 				}
-				else if (board[y][x]==TELEPORT)
+				else if (board[y][x]==TELEPORT){
+					teleported=true;
 					x=BOARD_WIDTH-1;
+				}
 			}else mosso=false;
 			break;
 		case DOWN:
@@ -191,9 +205,10 @@ void spostaPersonaggio(){
 					score+=50;
 					board[y][x]=EMPTY;
 				}
-				else if (board[y][x]==TELEPORT)
+				else if (board[y][x]==TELEPORT){
+					teleported=true;
 					x=1;
-			
+				}
 			}else mosso=false;
 			break;
 	}

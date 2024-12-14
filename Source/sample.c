@@ -40,7 +40,7 @@ int main(void)
 	
 	ADC_init();	
 	ADC_start_conversion();	//prendo valore per inizializzare seed rand
-	
+
 	
 	inizializza();
 	BUTTON_init();

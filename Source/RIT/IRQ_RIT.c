@@ -226,7 +226,7 @@ if(down_2 !=0){
 	//********GESTIONE PERSONAGGIO********
 	static int count = 0;
 	switch(count){
-		case 10://10*50 msec = 500msec
+		case 6://6*50 msec = 300msec
 			if(actualDirection!=wantedDirection)
 				switch(wantedDirection){//controllo se l'ultimo input del giocatore è valido, in caso cambio direzione
 					case UP:
