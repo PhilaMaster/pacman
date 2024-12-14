@@ -12,6 +12,7 @@
 //#include "../led/led.h"
 //#include "../music/music.h"
 #include "pacman/pacman.h"
+#include "board/board.h"
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
 **
@@ -24,7 +25,10 @@
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
-extern int lastDirection;
+extern int lastDirection, x, y;
+extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
+//TODO possibile miglioramento: aggiungere variabile wantedDirection che diverrà actualDirection (l'attuale lastDirection) solo appena c'è un incrocio
+//in cui si può andare in quella direzione senza avere un muro che fa da ostacolo
 
 void RIT_IRQHandler (void)
 {			
@@ -39,6 +43,7 @@ static int up=0;
 		up++;
 		switch(up){
 			case 1:
+				if (board[y-1][x] != WALL)
 					lastDirection = UP;
 				break;
 			case 60:	//3sec = 3000ms/50ms = 60, note: rit ticks every 50 msecs
@@ -59,6 +64,7 @@ static int up=0;
 		down++;
 		switch(down){
 			case 1:
+				if (board[y+1][x] != WALL)
 					lastDirection = DOWN;
 				break;
 			default:
@@ -75,6 +81,7 @@ static int up=0;
 		left++;
 		switch(left){
 			case 1:
+				if (board[y][x-1] != WALL)
 					lastDirection = LEFT;
 				break;
 			default:
@@ -91,6 +98,7 @@ static int up=0;
 		right++;
 		switch(right){
 			case 1:
+				if (board[y][x+1] != WALL)
 					lastDirection = RIGHT;
 				break;
 			default:

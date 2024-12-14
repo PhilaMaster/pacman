@@ -32,24 +32,22 @@ uint8_t board[BOARD_HEIGHT][BOARD_WIDTH] = {
 int getX(int j){return X_OFFSET+j*WIDTH;}
 int getY(int i){return Y_OFFSET+i*HEIGHT;}
 
-void primoDisegnoBoard(){
+void refreshBoard(int xStart, int xEnd, int yStart, int yEnd){
 	int i,j;
 	
-	for (i=0;i<BOARD_HEIGHT;i++)
-		for(j=0;j<BOARD_WIDTH;j++){	
-			int x_start = getX(j);
-			int y_start = getY(i);
+	for (i=yStart;i<yEnd;i++)
+		for(j=xStart;j<xEnd;j++){	
 			switch(board[i][j]){
 				case WALL:
-					LCD_DrawRect(x_start, y_start, WIDTH, HEIGHT, Blue);
-					LCD_DrawLine(x_start, y_start, x_start+WIDTH, y_start+HEIGHT, Blue);
+					LCD_DrawRect(getX(j), getY(i), WIDTH, HEIGHT, Blue);
+					LCD_DrawLine(getX(j), getY(i), getX(j)+WIDTH, getY(i)+HEIGHT, Blue);
 					break;
 				case EMPTY:
 					//LCD_DrawLine(x_start, y_start, x_start+WIDTH, y_start+HEIGHT, White);
 					break;
 				case PILL:
 					//LCD_DrawRhombus(x_start,y_start, PILL_WIDTH, Yellow);
-					LCD_DrawSphere(x_start+WIDTH/2, y_start+HEIGHT/2, 1, Orange);
+					LCD_DrawSphere(getX(j)+WIDTH/2, getY(i)+HEIGHT/2, 1, Orange);
 			}
 		}
 }

@@ -24,7 +24,8 @@ void inizializzaSchermo(){
 	GUI_Text(0, 0, (uint8_t *) "Score: 00000          Time: 60", Red, White);
 	GUI_Text(0, 304, (uint8_t *) "Remaining lives: 1            ", Red, White);
 	
-	primoDisegnoBoard();
+	//disegno tutta la mappa
+	refreshBoard(0,BOARD_WIDTH, 0, BOARD_HEIGHT);
 	//primo disegno di pacman:
 	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
 }
