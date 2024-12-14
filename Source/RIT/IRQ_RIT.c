@@ -25,7 +25,7 @@
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
-extern int lastDirection, x, y;
+extern int actualDirection, wantedDirection, x, y;
 extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 //TODO possibile miglioramento: aggiungere variabile wantedDirection che diverrà actualDirection (l'attuale lastDirection) solo appena c'è un incrocio
 //in cui si può andare in quella direzione senza avere un muro che fa da ostacolo
@@ -44,7 +44,8 @@ static int up=0;
 		switch(up){
 			case 1:
 				if (board[y-1][x] != WALL)
-					lastDirection = UP;
+					actualDirection = UP;
+				wantedDirection = UP;
 				break;
 			case 60:	//3sec = 3000ms/50ms = 60, note: rit ticks every 50 msecs
 				// my code
@@ -65,7 +66,8 @@ static int up=0;
 		switch(down){
 			case 1:
 				if (board[y+1][x] != WALL)
-					lastDirection = DOWN;
+					actualDirection = DOWN;
+				wantedDirection = DOWN;
 				break;
 			default:
 				break;
@@ -82,7 +84,8 @@ static int up=0;
 		switch(left){
 			case 1:
 				if (board[y][x-1] != WALL)
-					lastDirection = LEFT;
+					actualDirection = LEFT;
+				wantedDirection = LEFT;
 				break;
 			default:
 				break;
@@ -99,7 +102,8 @@ static int up=0;
 		switch(right){
 			case 1:
 				if (board[y][x+1] != WALL)
-					lastDirection = RIGHT;
+					actualDirection = RIGHT;
+				wantedDirection = RIGHT;
 				break;
 			default:
 				break;
@@ -206,6 +210,17 @@ if(down_2 !=0){
 	static int count = 0;
 	switch(count){
 		case 10://10*50 msec = 500msec
+			if(actualDirection!=wantedDirection)
+				switch(wantedDirection){//controllo se l'ultimo input del giocatore è valido, in caso cambio direzione
+					case UP:
+						if(board[y-1][x]!=WALL) actualDirection=wantedDirection; break;
+					case DOWN:
+						if(board[y+1][x]!=WALL) actualDirection=wantedDirection; break;
+					case LEFT:
+						if(board[y][x-1]!=WALL) actualDirection=wantedDirection; break;
+					case RIGHT:
+						if(board[y][x+1]!=WALL) actualDirection=wantedDirection; break;
+				}
 			spostaPersonaggio();
 			count=0;
 			break;

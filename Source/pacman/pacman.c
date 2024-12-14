@@ -16,7 +16,7 @@ void disegnaTesto();
 int remainingTime = 60, score = 0, remainingLives = 1;
 
 //personaggio
-int x=5,y=3, lastDirection = DOWN;
+int x=5,y=3, actualDirection = DOWN, wantedDirection = DOWN;
 bool mosso=false;
 
 void inizializzaSchermo(){
@@ -50,7 +50,7 @@ void disegnaScore(){
 
 void disegnaPacman(){
 	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
-	switch(lastDirection){
+	switch(actualDirection){
 		case UP:
 			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y+1)+HEIGHT/2, PACMAN_RADIUS, Black);
 			break;
@@ -92,7 +92,7 @@ void inizializza(){
 
 void spostaPersonaggio(){
 	int prevScore = score;
-	switch(lastDirection){
+	switch(actualDirection){
 		case UP:
 			if(board[y-1][x] != WALL){
 				y--;
