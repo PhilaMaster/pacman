@@ -13,7 +13,7 @@ void disegnaScore();
 void disegnaTesto();
 
 //info a schermo
-int remainingTime = 60, score = 0, remainingLives = 1;
+int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1;
 
 //personaggio
 int x=11,y=13, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
@@ -46,6 +46,12 @@ void disegnaScore(){
 	char text[6];
 	sprintf(text, "%05d", score);
 	GUI_Text(56, 0, (uint8_t *)text, Red, White);
+}
+
+void disegnaVite(){
+	char text[19];
+	sprintf(text, "Remaining lives: %d", remainingLives);
+	GUI_Text(0, 304, (uint8_t *)text, Red, White);
 }
 
 void disegnaPacman(){
@@ -93,31 +99,22 @@ bool contiene(int v[], int n){
 	return false;
 }
 void bubblesort(int v[], int n) {
-int i,k;
-int temp;
-for(i = 0; i<n-1; i++) {
- for(k = 0; k<n-1-i; k++) {
-         if(v[k] > v[k+1]) {
-          temp = v[k];
-          v[k] = v[k+1];
-          v[k+1] = temp;
-         }
- }
+	int i,k;
+	int temp;
+	for(i = 0; i<n-1; i++) {
+	 for(k = 0; k<n-1-i; k++) {
+					 if(v[k] > v[k+1]) {
+						temp = v[k];
+						v[k] = v[k+1];
+						v[k+1] = temp;
+					 }
+	 }
+	}
 }
-}
+extern AD_current;
 void inizializza(){
 	int i,j;
-	int count=0;
-	//conto pillole, devono essere 270, (solo debug)
-    for (i = 1; i < BOARD_HEIGHT - 1; i++) {
-        for (j = 1; j < BOARD_WIDTH - 1; j++) {
-            if (board[i][j] == PILL){ 
-								count++;
-            }
-        }
-    }
-	score = count;
-	srand(((LPC_ADC->ADGDR>>4) & 0xFFF));
+	srand(AD_current);
 	//genero casualmente le super pills	
 	j=0;
 	for(i=0;i<6;i++){
@@ -141,7 +138,6 @@ void inizializza(){
 	
 	//disegno iniziale
 	inizializzaSchermo();
-	disegnaScore();//solo debug per count pillole
 }
 
 void spostaPersonaggio(){
@@ -152,11 +148,11 @@ void spostaPersonaggio(){
 				y--;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;
+					score+=10;livesScore+=10;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;
+					score+=50;livesScore+=50;
 					board[y][x]=EMPTY;
 				}
 			}else mosso=false;
@@ -166,11 +162,11 @@ void spostaPersonaggio(){
 				x--;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;
+					score+=10;livesScore+=10;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;
+					score+=50;livesScore+=50;
 					board[y][x]=EMPTY;
 				}
 				else if (board[y][x]==TELEPORT){
@@ -184,11 +180,11 @@ void spostaPersonaggio(){
 				y++;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;
+					score+=10;livesScore+=10;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;
+					score+=50;livesScore+=50;
 					board[y][x]=EMPTY;
 				}
 			}else mosso=false;
@@ -198,11 +194,11 @@ void spostaPersonaggio(){
 				x++;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;
+					score+=10;livesScore+=10;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;
+					score+=50;livesScore+=50;
 					board[y][x]=EMPTY;
 				}
 				else if (board[y][x]==TELEPORT){
@@ -212,6 +208,15 @@ void spostaPersonaggio(){
 			}else mosso=false;
 			break;
 	}
-	if (score!=prevScore) disegnaScore();
+	if (score!=prevScore) {
+		disegnaScore();
+		if (livesScore>=1000){
+			livesScore%=1000;
+			remainingLives++;
+			disable_timer(0);//ci mette un po' a disegnare, blocco il tempo intanto
+			disegnaVite();
+			enable_timer(0);
+		}
+	}
 	fastRefresh();
 }

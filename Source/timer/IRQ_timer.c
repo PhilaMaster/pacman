@@ -14,7 +14,9 @@
 //#include "../TouchPanel/TouchPanel.h"
 //#include "../pac"
 #include <stdio.h> /*for sprintf*/
-
+#include "board/board.h"
+#include "pacman/pacman.h"
+#include <stdbool.h>
 /******************************************************************************
 ** Function name:		Timer0_IRQHandler
 **
@@ -63,11 +65,34 @@ void TIMER0_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
+
+extern bool pause;
+extern int actualDirection,wantedDirection,x,y;
+extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
+
 void TIMER1_IRQHandler (void)
 {
 	if(LPC_TIM1->IR & 1) // MR0
 	{ 
-		// your code	
+
+		if(actualDirection!=wantedDirection)
+			switch(wantedDirection){//controllo se l'ultimo input del giocatore è valido, in caso cambio direzione
+				case UP:
+					if(board[y-1][x]!=WALL) actualDirection=wantedDirection; break;
+				case DOWN:
+					if(board[y+1][x]!=WALL) actualDirection=wantedDirection; break;
+				case LEFT:
+					if(board[y][x-1]!=WALL) actualDirection=wantedDirection; break;
+				case RIGHT:
+					if(board[y][x+1]!=WALL) actualDirection=wantedDirection; break;
+			}
+		//if (!pause) 
+		spostaPersonaggio();
+			
+		//ogni tanto il rit sfora e non si resetta, rimedio con questo reset
+		reset_RIT();
+		LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
+	
 		LPC_TIM1->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM1->IR & 2){ // MR1
@@ -99,7 +124,7 @@ void TIMER2_IRQHandler (void)
 {
 	if(LPC_TIM2->IR & 1) // MR0
 	{ 
-		// your code	
+		ADC_start_conversion();
 		LPC_TIM2->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM2->IR & 2){ // MR1

@@ -35,21 +35,33 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
+
 	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       */
   LCD_Initialization();
-	
 	ADC_init();	
-	ADC_start_conversion();	//prendo valore per inizializzare seed rand
-
+	ADC_start_conversion();
+	
+	//piccola attesa in modo che l'ADC calcoli un valore, per inizializzare il seed del random generator delle pills
+	__ASM("wfi");
+	LPC_SC -> PCONP |= (1 << 22);  // TURN ON TIMER 2
+	init_timer(2,0,0,3,0x17D784);//un secondo, stop+interrupt
+	enable_timer(2);
+	int i;
+	for(i=0;i<5;i++)	__ASM("wfi");
+	disable_timer(2);
+  
+	//LPC_SC -> PCONP |= (1 << 23);  // TURN ON TIMER 3	
 	
 	inizializza();
 	BUTTON_init();
 	joystick_init();											/* Joystick Initialization            */	
 	enable_RIT();													/* enable RIT to count 50ms				 */
 
-	
+	GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);//scritta di pausa
 	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
-	enable_timer(0);
+	//enable_timer(0); //all'inizio sono in uno stato di pausa, quindi il tempo non scorre subito
+	init_timer(1,0,0,3,0x4C4B40);//timer per il refresh dello schermo (velocità pacman) 4C4B40 = 0,2sec
+	//enable_timer(1); //non si deve muovere se in pausa
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
