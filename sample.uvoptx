@@ -332,9 +332,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>136</LineNumber>
+          <LineNumber>219</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>10432</Address>
+          <Address>10978</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -343,14 +343,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Source\pacman\pacman.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\sample_GLCD_TP\Source/pacman/pacman.c\136</Expression>
+          <Expression>\\sample_GLCD_TP\Source/pacman/pacman.c\219</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>165</LineNumber>
+          <LineNumber>152</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>10804</Address>
+          <Address>10680</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -359,28 +359,28 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Source\pacman\pacman.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\sample_GLCD_TP\Source/pacman/pacman.c\165</Expression>
+          <Expression>\\sample_GLCD_TP\Source/pacman/pacman.c\152</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>116</LineNumber>
+          <LineNumber>119</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>0</Address>
+          <Address>10284</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
+          <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\Source\pacman\pacman.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\sample_GLCD_TP\Source/pacman/pacman.c\119</Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>117</LineNumber>
+          <LineNumber>118</LineNumber>
           <EnabledFlag>0</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -396,7 +396,7 @@
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>144</LineNumber>
+          <LineNumber>146</LineNumber>
           <EnabledFlag>0</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -412,7 +412,7 @@
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>217</LineNumber>
+          <LineNumber>228</LineNumber>
           <EnabledFlag>0</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>

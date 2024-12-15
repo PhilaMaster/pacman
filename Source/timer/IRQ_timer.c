@@ -36,8 +36,8 @@ void TIMER0_IRQHandler (void)
 	{ 
 		remainingTime--;
 		disegnaTempo();
-		//if (remainingTime==0)
-			//...
+		if (remainingTime==0)
+			gameOver();
 		LPC_TIM0->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM0->IR & 2){ // MR1

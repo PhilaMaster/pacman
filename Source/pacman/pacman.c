@@ -11,6 +11,8 @@ extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 void disegnaTempo();
 void disegnaScore();
 void disegnaTesto();
+void victory();
+void gameOver();
 
 //info a schermo
 int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1;
@@ -138,6 +140,12 @@ void inizializza(){
 	
 	//disegno iniziale
 	inizializzaSchermo();
+	
+	GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);//scritta di pausa
+	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
+	//enable_timer(0); //all'inizio sono in uno stato di pausa, quindi il tempo non scorre subito
+	init_timer(1,0,0,3,0x4C4B40);//timer per il refresh dello schermo (velocità pacman) 4C4B40 = 0,2sec
+	//enable_timer(1); //non si deve muovere se in pausa
 }
 
 void spostaPersonaggio(){
@@ -210,6 +218,9 @@ void spostaPersonaggio(){
 	}
 	if (score!=prevScore) {
 		disegnaScore();
+		
+		if(score>=2940) victory();
+		
 		if (livesScore>=1000){
 			livesScore%=1000;
 			remainingLives++;
@@ -219,4 +230,22 @@ void spostaPersonaggio(){
 		}
 	}
 	fastRefresh();
+}
+
+void victory(){
+	disable_RIT();//fermo input
+	disable_timer(0);//fermo tempo
+	disable_timer(1);//fermo personaggio
+	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
+	GUI_Text(80, 140, (uint8_t *) "VICTORY!", Red, White);
+	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
+}
+
+void gameOver(){
+	disable_RIT();//fermo input
+	disable_timer(0);//fermo tempo
+	disable_timer(1);//fermo personaggio
+	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
+	GUI_Text(80, 140, (uint8_t *) "Game over!", Red, White);
+	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
 }
