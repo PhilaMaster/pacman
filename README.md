@@ -1,5 +1,5 @@
 # Progetto Pacman
-Questo progetto è un'implementazione del gioco Pac-Man, sviluppato come parte del corso di Architetture dei Sistemi di Elaborazione. Il gioco è stato sviluppato per l'emulatore LandTiger, con un focus sull'implementazione della logica di gioco e sulla gestione delle risorse hardware limitate del dispositivo.
+Questo progetto è un'implementazione del gioco Pac-Man, sviluppato come parte del corso di Architetture dei Sistemi di Elaborazione. Il gioco è stato sviluppato per la scheda LandTiger, con un focus sull'implementazione della logica di gioco e sulla gestione delle risorse hardware limitate del dispositivo.
 
 # Requisiti
 Keil µVision: Per la programmazione e il debugging del progetto.
