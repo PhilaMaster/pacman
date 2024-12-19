@@ -15,7 +15,7 @@ void victory();
 void gameOver();
 
 //info a schermo
-int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1;
+int remainingTime = 70, score = 0, livesScore=0, remainingLives = 1, pills=0;
 
 //personaggio
 int x=11,y=13, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
@@ -117,12 +117,17 @@ extern AD_current;
 void inizializza(){
 	int i,j;
 	srand(AD_current);
+	//conto numero pills
+	for(i=0;i<BOARD_HEIGHT;i++)
+		for(j=0;j<BOARD_WIDTH;j++)
+			if (board[i][j]==PILL)
+				pills++;
 	//genero casualmente le super pills	
 	j=0;
 	for(i=0;i<6;i++){
 		int r;
 		do{
-			r = rand()%270;
+			r = rand()%pills;
 		}while(contiene(randomPills,r));
 		randomPills[j++]=r;
 	}
@@ -219,7 +224,7 @@ void spostaPersonaggio(){
 	if (score!=prevScore) {
 		disegnaScore();
 		
-		if(score>=2940) victory();
+		if(score>=(pills-6)*10+6*50) victory();
 		
 		if (livesScore>=1000){
 			livesScore%=1000;

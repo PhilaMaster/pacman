@@ -13,4 +13,3 @@
 
 #define BOARD_WIDTH 23
 #define BOARD_HEIGHT 25
-
