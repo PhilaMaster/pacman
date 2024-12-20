@@ -163,7 +163,12 @@ void TIMER3_IRQHandler (void)
 {
 	if(LPC_TIM3->IR & 1) // MR0
 	{ 
+		static int count=0;
 		spostaFantasmino();
+		if(count++>40 && velocita < 2){
+			velocita++;
+			count = 0;
+		}
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1

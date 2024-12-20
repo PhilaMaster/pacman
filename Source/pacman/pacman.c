@@ -244,6 +244,7 @@ void victory(){
 	disable_RIT();//fermo input
 	disable_timer(0);//fermo tempo
 	disable_timer(1);//fermo personaggio
+	disable_timer(3);//fermo fantasmino
 	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
 	GUI_Text(80, 140, (uint8_t *) "VICTORY!", Red, White);
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
@@ -253,25 +254,35 @@ void gameOver(){
 	disable_RIT();//fermo input
 	disable_timer(0);//fermo tempo
 	disable_timer(1);//fermo personaggio
+	disable_timer(3);//fermo fantasmino
 	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
 	GUI_Text(80, 140, (uint8_t *) "Game over!", Red, White);
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
 }
 
+extern int velocita,bx,by;
+
 void hitted(){
-	disable_timer(0);
-	disable_timer(1);
-	disable_timer(2);
+	disable_timer(0);//fermo tempo
+	disable_timer(1);//fermo personaggio
+	disable_timer(3);//fermo fantasmino
 	if(remainingLives==1) gameOver();
 	else{
+		//aggiorno vite
 		remainingLives--;
 		disegnaVite();
+		//cancello vecchio pacman
+		LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+		//imposto nuove coordinate
 		x=INITIAL_X;
 		y=INITIAL_Y;
-		//velocita=0;
+		bx=B_INITIAL_X;
+		by=B_INITIAL_Y;
+		//resetto velocità fantasmino
+		velocita=0;
 	}
 	
 	enable_timer(0);
 	enable_timer(1);
-	enable_timer(2);
+	enable_timer(3);
 }

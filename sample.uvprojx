@@ -612,9 +612,9 @@
               <FilePath>.\Source\pacman\astar.c</FilePath>
             </File>
             <File>
-              <FileName>Blinky.c</FileName>
+              <FileName>blinky.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\pacman\Blinky.c</FilePath>
+              <FilePath>.\Source\pacman\blinky.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -962,7 +962,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
@@ -1208,9 +1208,9 @@
               <FilePath>.\Source\pacman\astar.c</FilePath>
             </File>
             <File>
-              <FileName>Blinky.c</FileName>
+              <FileName>blinky.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\pacman\Blinky.c</FilePath>
+              <FilePath>.\Source\pacman\blinky.c</FilePath>
             </File>
           </Files>
         </Group>
