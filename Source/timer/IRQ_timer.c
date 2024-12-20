@@ -89,6 +89,10 @@ void TIMER1_IRQHandler (void)
 		//if (!pause) 
 		spostaPersonaggio();
 			
+		//controllo fantasmino
+		if(checkHit())
+			hitted();
+		
 		//ogni tanto il rit sfora e non si resetta, rimedio con questo reset
 		reset_RIT();
 		LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
@@ -153,26 +157,33 @@ void TIMER2_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
+extern velocita;
+
 void TIMER3_IRQHandler (void)
 {
 	if(LPC_TIM3->IR & 1) // MR0
 	{ 
-		// your code
+		spostaFantasmino();
 		LPC_TIM3->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM3->IR & 2){ // MR1
-		// your code
+		if (velocita==2)
+			spostaFantasmino();
 		LPC_TIM3->IR = 2;			// clear interrupt flag 
 	}
 	else if(LPC_TIM3->IR & 4){ // MR2
-		// your code	
+		if (velocita>0)
+			spostaFantasmino();
 		LPC_TIM3->IR = 4;			// clear interrupt flag 
 	}
 	else if(LPC_TIM3->IR & 8){ // MR3
-		// your code	
+		if (velocita==2)
+			spostaFantasmino();
 		LPC_TIM3->IR = 8;			// clear interrupt flag 
 	} 
-
+	//controllo fantasmino
+	if(checkHit())
+		hitted();
 	return;
 }
 

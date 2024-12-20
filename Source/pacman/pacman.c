@@ -15,11 +15,13 @@ void victory();
 void gameOver();
 
 //info a schermo
-int remainingTime = 70, score = 0, livesScore=0, remainingLives = 1, pills=0;
+int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1, pills=0;
 
 //personaggio
-int x=11,y=13, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
+int x=INITIAL_X,y=INITIAL_Y, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
 bool mosso=false,teleported=false;
+
+//extern int bx,by,velocita;
 
 void inizializzaSchermo(){
 	LCD_Clear(Black);
@@ -30,6 +32,7 @@ void inizializzaSchermo(){
 	refreshBoard(0,BOARD_WIDTH, 0, BOARD_HEIGHT);
 	//primo disegno di pacman:
 	LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
+	//LCD_DrawSphere(getX(bx)+WIDTH/2, getY(by)+HEIGHT/2, PACMAN_RADIUS, Red);
 }
 
 void disegnaTesto(){
@@ -51,9 +54,9 @@ void disegnaScore(){
 }
 
 void disegnaVite(){
-	char text[19];
-	sprintf(text, "Remaining lives: %d", remainingLives);
-	GUI_Text(0, 304, (uint8_t *)text, Red, White);
+	char text[3];
+	sprintf(text, "%d", remainingLives);
+	GUI_Text(135, 304, (uint8_t *)text, Red, White);
 }
 
 void disegnaPacman(){
@@ -149,7 +152,7 @@ void inizializza(){
 	GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);//scritta di pausa
 	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
 	//enable_timer(0); //all'inizio sono in uno stato di pausa, quindi il tempo non scorre subito
-	init_timer(1,0,0,3,0x4C4B40);//timer per il refresh dello schermo (velocità pacman) 4C4B40 = 0,2sec
+	init_timer(1,0,0,3,0x393870);//timer per il refresh dello schermo (velocità pacman) 393870 -> 0,15 sec refresh
 	//enable_timer(1); //non si deve muovere se in pausa
 }
 
@@ -253,4 +256,22 @@ void gameOver(){
 	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
 	GUI_Text(80, 140, (uint8_t *) "Game over!", Red, White);
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
+}
+
+void hitted(){
+	disable_timer(0);
+	disable_timer(1);
+	disable_timer(2);
+	if(remainingLives==1) gameOver();
+	else{
+		remainingLives--;
+		disegnaVite();
+		x=INITIAL_X;
+		y=INITIAL_Y;
+		//velocita=0;
+	}
+	
+	enable_timer(0);
+	enable_timer(1);
+	enable_timer(2);
 }

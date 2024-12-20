@@ -130,6 +130,7 @@ if(down_0 !=0){
 					GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);
 					disable_timer(0);//fermo il tempo
 					disable_timer(1);//fermo pacman
+					disable_timer(3);//fermo il fantasma
 				}
 				else{
 					//coordinate della pausa
@@ -140,6 +141,7 @@ if(down_0 !=0){
 					refreshBoard(x1,x2,y1,y2);//clear del messaggio di pausa
 					enable_timer(0);//faccio ripartire il tempo
 					enable_timer(1);//faccio ripartire pacman
+					enable_timer(3);//faccio ripartire il fantasma
 				}
 			
 				break;

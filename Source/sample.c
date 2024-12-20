@@ -43,16 +43,17 @@ int main(void)
 	
 	//piccola attesa in modo che l'ADC calcoli un valore, per inizializzare il seed del random generator delle pills
 	__ASM("wfi");
-	LPC_SC -> PCONP |= (1 << 22);  // TURN ON TIMER 2
+	LPC_SC -> PCONP |= (1 << 22);  // TURN ON TIMER 2,gestione ADC e random pills
 	init_timer(2,0,0,3,0x17D784);//un secondo, reset+interrupt
 	enable_timer(2);
 	int i;
 	for(i=0;i<5;i++)	__ASM("wfi");
 	disable_timer(2);
   
-	//LPC_SC -> PCONP |= (1 << 23);  // TURN ON TIMER 3	
+	LPC_SC -> PCONP |= (1 << 23);  // TURN ON TIMER 3, gestione fantasmino, quattro velocità, una per ogni match register
 	
 	inizializza();
+	inizializzaBlinky();
 	BUTTON_init();
 	joystick_init();											/* Joystick Initialization            */	
 	enable_RIT();													/* enable RIT to count 50ms				 */
