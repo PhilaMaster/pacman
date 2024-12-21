@@ -30,7 +30,8 @@ volatile int down_2 = 0;
 volatile bool pause = true;
 extern int actualDirection, wantedDirection, x, y;
 extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
-
+extern bool feared, eaten, velocita;
+int respawnCounter=0, fearCounter=0;
 void RIT_IRQHandler (void)
 {			
 
@@ -214,30 +215,23 @@ if(down_2 !=0){
 		disable_RIT();
 	}
 */
-
-	//********GESTIONE PERSONAGGIO********
-	/*
-	static int count = 0;
-	switch(count){
-		case 6://6*50 msec = 300msec
-			if(actualDirection!=wantedDirection)
-				switch(wantedDirection){//controllo se l'ultimo input del giocatore è valido, in caso cambio direzione
-					case UP:
-						if(board[y-1][x]!=WALL) actualDirection=wantedDirection; break;
-					case DOWN:
-						if(board[y+1][x]!=WALL) actualDirection=wantedDirection; break;
-					case LEFT:
-						if(board[y][x-1]!=WALL) actualDirection=wantedDirection; break;
-					case RIGHT:
-						if(board[y][x+1]!=WALL) actualDirection=wantedDirection; break;
-				}
-			if (!pause) spostaPersonaggio();
-			count=0;
-			break;
-		
+	
+	//gestione fear fantasmino, dopo 10 secondi deve tornare normale
+	//10000msec/50msec = 200
+	if (feared && fearCounter == 200){
+		feared=false;
+		velocita=1;
 	}
-	count++;
-	*/
+	fearCounter++;
+	//gestione respawn fantasmino, dopo 3 secondi deve tornare
+	//3000msec/50msec = 60
+
+	if (eaten && respawnCounter==60){
+		enable_timer(3);
+		eaten=false;
+	}
+	respawnCounter++;
+	
 	
 	reset_RIT();
   LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */

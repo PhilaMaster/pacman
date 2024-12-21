@@ -157,7 +157,7 @@ void TIMER2_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
-extern velocita;
+extern velocita, feared;
 
 void TIMER3_IRQHandler (void)
 {
@@ -165,7 +165,7 @@ void TIMER3_IRQHandler (void)
 	{ 
 		static int count=0;
 		spostaFantasmino();
-		if(count++>40 && velocita < 2){
+		if(count++>40 && velocita < 2 && !feared){
 			velocita++;
 			count = 0;
 		}

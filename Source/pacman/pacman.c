@@ -13,9 +13,10 @@ void disegnaScore();
 void disegnaTesto();
 void victory();
 void gameOver();
+void setFeared();
 
 //info a schermo
-int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1, pills=0;
+int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1, pills=0,takenPills=0;
 
 //personaggio
 int x=INITIAL_X,y=INITIAL_Y, actualDirection = DOWN, wantedDirection = DOWN, tpCoordinate;
@@ -108,11 +109,11 @@ void bubblesort(int v[], int n) {
 	int temp;
 	for(i = 0; i<n-1; i++) {
 	 for(k = 0; k<n-1-i; k++) {
-					 if(v[k] > v[k+1]) {
-						temp = v[k];
-						v[k] = v[k+1];
-						v[k+1] = temp;
-					 }
+		 if(v[k] > v[k+1]) {
+			temp = v[k];
+			v[k] = v[k+1];
+			v[k+1] = temp;
+		 }
 	 }
 	}
 }
@@ -156,7 +157,7 @@ void inizializza(){
 	//enable_timer(1); //non si deve muovere se in pausa
 }
 
-void spostaPersonaggio(){
+void spostaPersonaggio(){//TODO riscrivere sto codice che è fatto coi piedi
 	int prevScore = score;
 	switch(actualDirection){
 		case UP:
@@ -164,11 +165,11 @@ void spostaPersonaggio(){
 				y--;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;livesScore+=10;
+					score+=10;livesScore+=10;takenPills++;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;livesScore+=50;
+					score+=50;livesScore+=50;takenPills++;setFeared();
 					board[y][x]=EMPTY;
 				}
 			}else mosso=false;
@@ -178,11 +179,11 @@ void spostaPersonaggio(){
 				x--;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;livesScore+=10;
+					score+=10;livesScore+=10;takenPills++;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;livesScore+=50;
+					score+=50;livesScore+=50;takenPills++;setFeared();
 					board[y][x]=EMPTY;
 				}
 				else if (board[y][x]==TELEPORT){
@@ -196,11 +197,11 @@ void spostaPersonaggio(){
 				y++;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;livesScore+=10;
+					score+=10;livesScore+=10;takenPills++;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;livesScore+=50;
+					score+=50;livesScore+=50;takenPills++;setFeared();
 					board[y][x]=EMPTY;
 				}
 			}else mosso=false;
@@ -210,11 +211,11 @@ void spostaPersonaggio(){
 				x++;
 				mosso=true;
 				if (board[y][x]==PILL){
-					score+=10;livesScore+=10;
+					score+=10;livesScore+=10;takenPills++;
 					board[y][x]=EMPTY;
 				} 
 				else if (board[y][x]==SUPER_PILL){
-					score+=50;livesScore+=50;
+					score+=50;livesScore+=50;takenPills++;setFeared();
 					board[y][x]=EMPTY;
 				}
 				else if (board[y][x]==TELEPORT){
@@ -227,7 +228,7 @@ void spostaPersonaggio(){
 	if (score!=prevScore) {
 		disegnaScore();
 		
-		if(score>=(pills-6)*10+6*50) victory();
+		if(takenPills>=pills) victory();
 		
 		if (livesScore>=1000){
 			livesScore%=1000;
@@ -260,29 +261,53 @@ void gameOver(){
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
 }
 
-extern int velocita,bx,by;
+extern int velocita,bx,by,respawnCounter;
+extern bool feared, eaten;//fantasmino
 
 void hitted(){
 	disable_timer(0);//fermo tempo
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
-	if(remainingLives==1) gameOver();
-	else{
-		//aggiorno vite
-		remainingLives--;
-		disegnaVite();
-		//cancello vecchio pacman
-		LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
-		//imposto nuove coordinate
-		x=INITIAL_X;
-		y=INITIAL_Y;
+	if(!feared){
+		if(remainingLives==1) gameOver();
+		else{//ho qualche vita e faccio continuare il gioco
+			//aggiorno vite
+			remainingLives--;
+			disegnaVite();
+			//cancello vecchio pacman
+			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Black);
+			//imposto nuove coordinate e disegno pacman
+			x=INITIAL_X;
+			y=INITIAL_Y;
+			LCD_DrawSphere(getX(x)+WIDTH/2, getY(y)+HEIGHT/2, PACMAN_RADIUS, Yellow);
+			//imposto nuove coordinate e disegno fantasmino
+			bx=B_INITIAL_X;
+			by=B_INITIAL_Y;
+			LCD_DrawSphere(getX(bx)+WIDTH/2, getY(by)+HEIGHT/2, PACMAN_RADIUS, Red);
+			//resetto velocità fantasmino
+			velocita=0;
+			enable_timer(3);
+		}
+	}
+	else{//era in modalità Frightened Mode
+		score+=100;
+		disegnaScore();
 		bx=B_INITIAL_X;
 		by=B_INITIAL_Y;
-		//resetto velocità fantasmino
-		velocita=0;
+		eaten=true;
+		feared=false;
+		respawnCounter=0;
+		disable_timer(3);
 	}
+
 	
 	enable_timer(0);
 	enable_timer(1);
-	enable_timer(3);
+	
+}
+extern int fearCounter;
+void setFeared(){
+	feared=true;
+	fearCounter=0;
+	velocita = 0;
 }
