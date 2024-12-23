@@ -6,9 +6,11 @@ Questo progetto è un'implementazione del gioco Pac-Man, sviluppato come parte d
 
 
 # Requisiti
-Keil µVision: Per la programmazione e il debugging del progetto.
-LandTiger Board: (Se disponibile fisicamente) per testare il progetto sul dispositivo reale.
-
+<ul>
+<li><b>Keil µVision:</b> Per la programmazione e il debugging del progetto.</li>
+<li>LandTiger Board:</b> Per testare il progetto sul dispositivo reale, se disponibile fisicamente. </li>
+<li>Affinché sia assicurato la corretta generazione casuale della mappa è consigliato impostare il potenziometro in una qualsiasi posizione tranne quella massima (in quel caso il poco rumore potrebbe portare alla stessa generazione più volte)</li>
+</ul>
 
 # Specifiche del Gioco
 <ul>

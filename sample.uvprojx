@@ -607,14 +607,14 @@
               <FilePath>.\Source\pacman\pacman.h</FilePath>
             </File>
             <File>
-              <FileName>astar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\astar.c</FilePath>
-            </File>
-            <File>
               <FileName>blinky.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\blinky.c</FilePath>
+            </File>
+            <File>
+              <FileName>bfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\bfs.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -645,6 +645,21 @@
               <FileName>lib_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\adc\lib_adc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>music</GroupName>
+          <Files>
+            <File>
+              <FileName>music.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\music\music.c</FilePath>
+            </File>
+            <File>
+              <FileName>music.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\music\music.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1203,14 +1218,14 @@
               <FilePath>.\Source\pacman\pacman.h</FilePath>
             </File>
             <File>
-              <FileName>astar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\pacman\astar.c</FilePath>
-            </File>
-            <File>
               <FileName>blinky.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\pacman\blinky.c</FilePath>
+            </File>
+            <File>
+              <FileName>bfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\pacman\bfs.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1241,6 +1256,21 @@
               <FileName>lib_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\adc\lib_adc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>music</GroupName>
+          <Files>
+            <File>
+              <FileName>music.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\music\music.c</FilePath>
+            </File>
+            <File>
+              <FileName>music.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\music\music.h</FilePath>
             </File>
           </Files>
         </Group>

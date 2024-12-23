@@ -15,6 +15,7 @@
 #include "board/board.h"
 #include <stdbool.h>
 #include "GLCD/GLCD.h" 
+#include "music/music.h"
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
 **
@@ -24,14 +25,112 @@
 ** Returned value:		None
 **
 ******************************************************************************/
+
+	
+	
 volatile int down_0 = 0;
 volatile int down_1 = 0;
 volatile int down_2 = 0;
-volatile bool pause = true;
-extern int actualDirection, wantedDirection, x, y;
+volatile bool pause = true, timerEnabled=false;
+extern int actualDirection, wantedDirection, x, y, remainingTime;
 extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 extern bool feared, eaten, velocita;
 int respawnCounter=0, fearCounter=0;
+int currentPlaying = INTRO;
+
+NOTE pacman_cookie[] = 
+{
+    {c4, time_semicroma}, 
+    {g3, time_semicroma}, 
+    {c4, time_semicroma}, 
+    {g3, time_semicroma}, 
+    {c4, time_semicroma}, 
+    {pausee, time_semicroma} // breve pausa per creare il ritmo
+};
+
+NOTE pacman_super_pill[] = 
+{
+    // Pattern ripetuto rapidamente
+    {c4, time_biscroma}, 
+    {g3, time_biscroma}, 
+    {c4, time_biscroma}, 
+    {g3, time_biscroma}, 
+    {c4, time_biscroma}, 
+    {g3, time_biscroma},
+    
+    // Secondo ciclo (per dare continuità)
+    {d4, time_biscroma}, 
+    {a3, time_biscroma}, 
+    {d4, time_biscroma}, 
+    {a3, time_biscroma}, 
+    {d4, time_biscroma}, 
+    {a3, time_biscroma},
+    
+    // Pausa breve per ritmo
+    {pausee, time_semibiscroma},
+
+    // Ripetizione del pattern
+    {c4, time_biscroma}, 
+    {g3, time_biscroma}, 
+    {c4, time_biscroma}, 
+    {g3, time_biscroma}, 
+    {c4, time_biscroma}, 
+    {g3, time_biscroma},
+};
+
+NOTE pacman_base_theme[] = 
+{
+    // Pattern principale
+    {c4, time_semicroma}, 
+    {g3, time_semicroma}, 
+    {c4, time_semicroma}, 
+    {g3, time_semicroma},
+
+    // Pausa per un ritmo meno frenetico
+    {pausee, time_biscroma},
+
+    // Seconda parte con piccola variazione
+    {d4, time_semicroma}, 
+    {a3, time_semicroma}, 
+    {d4, time_semicroma}, 
+    {a3, time_semicroma},
+
+    // Pausa di chiusura prima di ripetere
+    {pausee, time_biscroma},
+
+    // Ripetizione del pattern
+    {c4, time_semicroma}, 
+    {g3, time_semicroma}, 
+    {c4, time_semicroma}, 
+    {g3, time_semicroma},
+};
+
+NOTE pacman_intro[] = 
+{
+    // Sequenza iniziale riconoscibile
+    {g3, time_semicroma}, 
+    {g4, time_semicroma}, 
+    {a4, time_semicroma}, 
+    {g4, time_semicroma},
+
+    // Breve pausa per creare tensione
+    {pausee, time_biscroma},
+
+    // Crescendo rapido
+    {f4, time_semicroma}, 
+    {g4, time_semicroma}, 
+    {a4, time_semicroma}, 
+    {g4, time_semicroma}, 
+    {b4, time_semicroma},
+
+    // Pausa per chiusura
+    {pausee, time_semicroma},
+
+    // Conclusione
+    {c5, time_croma}, 
+    {pausee, time_croma}, 
+};
+
 void RIT_IRQHandler (void)
 {			
 
@@ -103,23 +202,7 @@ static int up=0;
 	else{
 			right=0;
 	}
-	/*
-	static int select=0;	
-	
-	if((LPC_GPIO1->FIOPIN & (1<<25)) == 0){
-		// Joytick SELECT pressed 
-		select++;
-		switch(select){
-			case 1:
-				//my code
-				break;
-			default:
-				break;
-		}
-	}
-	else{
-			select=0;
-	}*/
+
 /*************************INT0***************************/
 if(down_0 !=0){
 	down_0++;
@@ -129,7 +212,7 @@ if(down_0 !=0){
 				pause = !pause;
 				if(pause){
 					GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);
-					disable_timer(0);//fermo il tempo
+					fermaTempo();
 					disable_timer(1);//fermo pacman
 					disable_timer(3);//fermo il fantasma
 				}
@@ -140,7 +223,7 @@ if(down_0 !=0){
 					LCD_FillRegion(getX(x1)+3,getY(y1)+3,getX(x2)-3,getY(y2),Black);//disegno di nero lo sfondo sotto la scritta pausa
 					enable_RIT();
 					refreshBoard(x1,x2,y1,y2);//clear del messaggio di pausa
-					enable_timer(0);//faccio ripartire il tempo
+					avviaTempo();//faccio ripartire il tempo
 					enable_timer(1);//faccio ripartire pacman
 					enable_timer(3);//faccio ripartire il fantasma
 				}
@@ -156,70 +239,53 @@ if(down_0 !=0){
 		LPC_PINCON->PINSEL4    |= (1 << 20);     /* External interrupt 0 pin selection */
 	}
 } // end INT0
-
-/*************************KEY1***************************/
-/*
-if(down_1 !=0){
-	down_1++;
-	if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){
-		switch(down_1){
-			case 2:
-				// your code	
-				break;
-			default:
-				break;
-		}
-	}
-	else {	// button released 
-		down_1=0;			
-		NVIC_EnableIRQ(EINT1_IRQn);							 // disable Button interrupts			
-		LPC_PINCON->PINSEL4    |= (1 << 22);     // External interrupt 0 pin selection 
-	}
-} // end KEY1
-
-**************************KEY2***************************
-if(down_2 !=0){
-	down_2++;
-	if((LPC_GPIO2->FIOPIN & (1<<12)) == 0){
-		switch(down_2){
-			case 2:
-				// your code	
-				break;
-			default:
-				break;
-		}
-	}
-	else {	// button released 
-		down_2=0;		
-		NVIC_EnableIRQ(EINT2_IRQn);							 // disable Button interrupts			/
-		LPC_PINCON->PINSEL4    |= (1 << 24);     // External interrupt 0 pin selection /
-	}
-} // end KEY2
-	*/
 //***************MUSICA****************
-/*
+
 	static int currentNote = 0;
 	static int ticks = 0;
-	if(!isNotePlaying())
+	
+	static bool intro = true;
+	if(!isNotePlaying() && !pause)
 	{
 		++ticks;
 		if(ticks == 1)
 		{
 			ticks = 0;
-			playNote(song[currentNote++]);
+			
+			switch(currentPlaying){
+				case INTRO:
+				if(intro){
+					playNote(pacman_intro[currentNote++]);
+					if (currentNote++/(sizeof(pacman_base_theme)/sizeof(pacman_base_theme[0]))) intro=false;
+				}
+				break;
+				case BASE:playNote(pacman_base_theme[currentNote++%(sizeof(pacman_base_theme)/sizeof(pacman_base_theme[0]))]);break;
+				case FAST:playNote(pacman_super_pill[currentNote++%(sizeof(pacman_super_pill)/sizeof(pacman_super_pill[0]))]);break;
+				case BISCUIT:playNote(pacman_cookie[currentNote++%(sizeof(pacman_cookie)/sizeof(pacman_cookie[0]))]);break;
+				default: playNote(pacman_base_theme[currentNote++%(sizeof(pacman_base_theme)/sizeof(pacman_base_theme[0]))]);
+			}
+			
 		}
 	}
-	
-	if(currentNote == (sizeof(song) / sizeof(song[0])))
-	{
-		disable_RIT();
+
+	//gestione tempo di gioco (timer dei 60 secondi)
+	static int timerCounter=0;
+	if (timerEnabled) timerCounter++;
+	if (timerCounter==20){//refresh ogni secondo, quindi 1000msec/50msec=20
+		remainingTime--;
+		disegnaTempo();
+		if (remainingTime==0)
+			gameOver();
+		timerCounter=0;
 	}
-*/
-	
+		
+
+
 	//gestione fear fantasmino, dopo 10 secondi deve tornare normale
 	//10000msec/50msec = 200
 	if (feared && fearCounter == 200){
 		feared=false;
+		currentPlaying=BASE;
 		velocita=1;
 	}
 	fearCounter++;

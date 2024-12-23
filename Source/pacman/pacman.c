@@ -8,6 +8,8 @@ void inizializza();
 
 extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 
+void avviaTempo();
+void fermaTempo();
 void disegnaTempo();
 void disegnaScore();
 void disegnaTesto();
@@ -151,7 +153,7 @@ void inizializza(){
 	inizializzaSchermo();
 	
 	GUI_Text(100, 140, (uint8_t *) "PAUSE", Red, White);//scritta di pausa
-	init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
+	//init_timer(0,0,0,3,0x17D7840);//timer per lo scorrere del tempo, decrementa ogni secondo il tempo rimanente
 	//enable_timer(0); //all'inizio sono in uno stato di pausa, quindi il tempo non scorre subito
 	init_timer(1,0,0,3,0x393870);//timer per il refresh dello schermo (velocità pacman) 393870 -> 0,15 sec refresh
 	//enable_timer(1); //non si deve muovere se in pausa
@@ -233,9 +235,9 @@ void spostaPersonaggio(){//TODO riscrivere sto codice che è fatto coi piedi
 		if (livesScore>=1000){
 			livesScore%=1000;
 			remainingLives++;
-			disable_timer(0);//ci mette un po' a disegnare, blocco il tempo intanto
+			fermaTempo();//ci mette un po' a disegnare, blocco il tempo intanto
 			disegnaVite();
-			enable_timer(0);
+			avviaTempo();
 		}
 	}
 	fastRefresh();
@@ -243,7 +245,7 @@ void spostaPersonaggio(){//TODO riscrivere sto codice che è fatto coi piedi
 
 void victory(){
 	disable_RIT();//fermo input
-	disable_timer(0);//fermo tempo
+	fermaTempo();
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
 	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
@@ -253,7 +255,7 @@ void victory(){
 
 void gameOver(){
 	disable_RIT();//fermo input
-	disable_timer(0);//fermo tempo
+	fermaTempo();
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
 	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
@@ -265,7 +267,7 @@ extern int velocita,bx,by,respawnCounter;
 extern bool feared, eaten;//fantasmino
 
 void hitted(){
-	disable_timer(0);//fermo tempo
+	fermaTempo();
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
 	if(!feared){
@@ -301,13 +303,26 @@ void hitted(){
 	}
 
 	
-	enable_timer(0);
+	avviaTempo();
 	enable_timer(1);
 	
 }
-extern int fearCounter;
+extern int fearCounter,currentPlaying;
+#include "music/music.h"
 void setFeared(){
 	feared=true;
 	fearCounter=0;
 	velocita = 0;
+	currentPlaying=FAST;
+}
+
+extern bool timerEnabled;
+void fermaTempo(){
+	//disable_timer(0);
+	timerEnabled = false;
+}
+
+void avviaTempo(){
+	//enable_timer(0);
+	timerEnabled = true;
 }

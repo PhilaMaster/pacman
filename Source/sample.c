@@ -26,11 +26,12 @@
 //#include "TouchPanel/TouchPanel.h"
 #include "timer/timer.h"
 #include <stdio.h>
+#include "music/music.h"
 
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
 #endif
-
+extern currentPlaying;
 
 int main(void)
 {
@@ -56,12 +57,18 @@ int main(void)
 	inizializzaBlinky();
 	BUTTON_init();
 	joystick_init();											/* Joystick Initialization            */	
+	currentPlaying = BASE;//musica base
 	enable_RIT();													/* enable RIT to count 50ms				 */
 
 
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
+	
+	//attivazione speaker
+	LPC_PINCON->PINSEL1 |= (1<<21);
+	LPC_PINCON->PINSEL1 &= ~(1<<20);
+	LPC_GPIO0->FIODIR |= (1<<26);
 	
   while (1)	
   {
