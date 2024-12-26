@@ -16,7 +16,8 @@ void disegnaTesto();
 void victory();
 void gameOver();
 void setFeared();
-
+void intToCharArray(int number, char charArray[]);
+void intToCharArrayOffset(int number, char charArray[], int offset);
 //info a schermo
 int remainingTime = 60, score = 0, livesScore=0, remainingLives = 1, pills=0,takenPills=0;
 
@@ -28,7 +29,7 @@ bool mosso=false,teleported=false;
 
 void inizializzaSchermo(){
 	LCD_Clear(Black);
-	GUI_Text(0, 0, (uint8_t *) "Score: 00000          Time: 60", Red, White);
+	GUI_Text(0, 0, (uint8_t *) "Score: 0000           Time: 60", Red, White);
 	GUI_Text(0, 304, (uint8_t *) "Remaining lives: 1            ", Red, White);
 	
 	//disegno tutta la mappa
@@ -46,13 +47,15 @@ void disegnaTesto(){
 
 void disegnaTempo(){
 	char text[3];
-	sprintf(text, "%02d", remainingTime);
+	//sprintf(text, "%02d", remainingTime);
+	intToCharArrayOffset(remainingTime,text,2);
 	GUI_Text(224, 0, (uint8_t *)text, Red, White);
 }
 
 void disegnaScore(){
 	char text[6];
-	sprintf(text, "%05d", score);
+	//sprintf(text, "%05d", score);
+	intToCharArrayOffset(score,text,4);
 	GUI_Text(56, 0, (uint8_t *)text, Red, White);
 }
 
@@ -230,7 +233,11 @@ void spostaPersonaggio(){//TODO riscrivere sto codice che è fatto coi piedi
 	if (score!=prevScore) {
 		disegnaScore();
 		
-		if(takenPills>=pills) victory();
+		if(takenPills>=pills) {
+			fastRefresh();
+			victory();
+			return;
+		}
 		
 		if (livesScore>=1000){
 			livesScore%=1000;
@@ -242,36 +249,45 @@ void spostaPersonaggio(){//TODO riscrivere sto codice che è fatto coi piedi
 	}
 	fastRefresh();
 }
-
+extern pause;
 void victory(){
-	disable_RIT();//fermo input
 	fermaTempo();
+	pause=true;//fermo musica
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
-	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
+	NVIC_DisableIRQ(EINT0_IRQn);		/* disable Button interrupts			 */
 	GUI_Text(80, 140, (uint8_t *) "VICTORY!", Red, White);
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
+	GUI_Text(5, 200, (uint8_t *) "Press Key1 to send statistics", Red, White);
+	NVIC_EnableIRQ(EINT1_IRQn);		/* abilito interrupt di key1 per inviare statistiche			 */
 }
 
 void gameOver(){
-	disable_RIT();//fermo input
 	fermaTempo();
+	pause=true;//fermo musica
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
-	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
+	NVIC_DisableIRQ(EINT0_IRQn);		/* disable Button interrupts			 */
 	GUI_Text(80, 140, (uint8_t *) "Game over!", Red, White);
 	GUI_Text(50, 170, (uint8_t *) "Reset to play again", Red, White);
+	GUI_Text(5, 200, (uint8_t *) "Press Key1 to send statistics", Red, White);
+	NVIC_EnableIRQ(EINT1_IRQn);		/* abilito interrupt di key1 per inviare statistiche			 */
 }
 
+#include "music/music.h"
 extern int velocita,bx,by,respawnCounter;
 extern bool feared, eaten;//fantasmino
+extern currentPlaying;
 
 void hitted(){
 	fermaTempo();
 	disable_timer(1);//fermo personaggio
 	disable_timer(3);//fermo fantasmino
 	if(!feared){
-		if(remainingLives==1) gameOver();
+		if(remainingLives==1) {
+			gameOver();
+			return;
+		}
 		else{//ho qualche vita e faccio continuare il gioco
 			//aggiorno vite
 			remainingLives--;
@@ -297,6 +313,7 @@ void hitted(){
 		bx=B_INITIAL_X;
 		by=B_INITIAL_Y;
 		eaten=true;
+		currentPlaying = BASE;
 		feared=false;
 		respawnCounter=0;
 		disable_timer(3);
@@ -325,4 +342,47 @@ void fermaTempo(){
 void avviaTempo(){
 	//enable_timer(0);
 	timerEnabled = true;
+}
+
+void intToCharArray(int number, char charArray[]) {
+    int temp = number;
+    int count = 0,i;
+
+    int temp2 = temp;
+    do {
+        temp2 /= 10;
+        count++;
+    } while (temp2 > 0);
+
+
+    charArray[count] = '\0';
+    for (i = count - 1; i >= 0; i--) {
+        charArray[i] = (temp % 10) + '0';
+        temp /= 10;
+    }
+}
+
+void intToCharArrayOffset(int number, char charArray[], int offset) {
+    int temp = number;
+    int count = 0;
+
+    int temp2 = temp;
+    do {
+        temp2 /= 10;
+        count++;
+    } while (temp2 > 0);
+
+    int totalLength = (count > offset ? count : offset);
+
+    charArray[totalLength] = '\0';
+		int i;
+
+    for (i = totalLength - 1; i >= 0; i--) {
+        if (temp > 0 || (count > 0 && i >= totalLength - count)) {
+            charArray[i] = (temp % 10) + '0';
+            temp /= 10;
+        } else {
+            charArray[i] = '0'; //zero di offset
+        }
+    }
 }

@@ -134,7 +134,7 @@ uint32_t init_timer ( uint8_t timer_num, uint32_t Prescaler, uint8_t MatchReg, u
 			LPC_TIM0->MCR |= SRImatchReg << 3*MatchReg;	
 		}
 	NVIC_EnableIRQ(TIMER0_IRQn);				/* enable timer interrupts*/
-	NVIC_SetPriority(TIMER0_IRQn, 0);		/* more priority than buttons */
+	//NVIC_SetPriority(TIMER0_IRQn, 0);		/* more priority than buttons */
 	return (0);
   }
   else if ( timer_num == 1 )

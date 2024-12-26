@@ -37,6 +37,7 @@ extern uint8_t board[BOARD_HEIGHT][BOARD_WIDTH];
 extern bool feared, eaten, velocita;
 int respawnCounter=0, fearCounter=0;
 int currentPlaying = INTRO;
+void sendStatistics();
 
 NOTE pacman_cookie[] = 
 {
@@ -239,6 +240,28 @@ if(down_0 !=0){
 		LPC_PINCON->PINSEL4    |= (1 << 20);     /* External interrupt 0 pin selection */
 	}
 } // end INT0
+
+/*************************KEY1***************************/
+if(down_1 !=0){
+	down_1++;
+	if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){
+		switch(down_1){
+			case 2:
+				sendStatistics();
+				disable_RIT();//dopo aver inviato le statistiche fermo tutto
+				return;
+				break;
+			default:
+				break;
+		}
+	}
+	else {	/* button released */
+		down_1=0;			
+		//NVIC_EnableIRQ(EINT1_IRQn);							 /* send statistics only once			*/
+		LPC_PINCON->PINSEL4    |= (1 << 22);     /* External interrupt 0 pin selection */
+	}
+} // end KEY1
+
 //***************MUSICA****************
 
 	static int currentNote = 0;
@@ -274,8 +297,10 @@ if(down_0 !=0){
 	if (timerCounter==20){//refresh ogni secondo, quindi 1000msec/50msec=20
 		remainingTime--;
 		disegnaTempo();
-		if (remainingTime==0)
+		if (remainingTime==0){
 			gameOver();
+			return;
+		}
 		timerCounter=0;
 	}
 		
@@ -303,6 +328,27 @@ if(down_0 !=0){
   LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
 	
   return;
+}
+#include "CAN/CAN.h"
+extern int score, remainingLives;
+void sendStatistics(){
+	//STATISTICS:
+	//SCORE in least 2 significant bytes
+	uint16_t s = (uint16_t) score;
+	CAN_TxMsg.data[0] = score&0xFF;
+	CAN_TxMsg.data[1] = (score&0xFF00)>>8;
+	
+	//REMAINING LIVES in third byte
+	CAN_TxMsg.data[2] = (uint8_t) remainingLives;
+	
+	//REMAINING TIME in fourth byte
+	CAN_TxMsg.data[2] = (uint8_t) remainingTime;
+	
+	CAN_TxMsg.len = 4;
+	CAN_TxMsg.id = 1;
+	CAN_TxMsg.format = STANDARD_FORMAT;
+	CAN_TxMsg.type = DATA_FRAME;
+	CAN_wrMsg (2, &CAN_TxMsg);               /* transmit message */
 }
 
 /******************************************************************************

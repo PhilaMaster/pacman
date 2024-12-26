@@ -38,7 +38,7 @@ uint16_t SinTable[45] =
     20 , 41 , 70 , 105, 146, 193, 243, 297, 353
 };
 
-
+#include "music/music.h"
 void TIMER0_IRQHandler (void)
 {
 	if(LPC_TIM0->IR & 1) // MR0
@@ -46,7 +46,7 @@ void TIMER0_IRQHandler (void)
 		static int sineticks=0;
 		/* DAC management */	
 		static int currentValue; 
-		currentValue = SinTable[sineticks];
+		currentValue = SinTable[sineticks]*VOLUME/100;
 		currentValue -= 410;
 		currentValue /= 1;
 		currentValue += 410;
