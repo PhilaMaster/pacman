@@ -33,9 +33,9 @@ void CAN_IRQHandler (void)  {
 	
   if (icr & (1 << 0)) {                          		/* CAN Controller #1 meassage is received */
 		// do nothing, can't receive through can 1
+		LCD_Clear(Red);//DEBUG
   }
 	if (icr & (1 << 1)) {                         /* CAN Controller #1 meassage is transmitted */
-		LCD_Clear(Black);//TODO verificare con scheda fisica che effettivamente questa parte di funzione venga chiamata inseguito al click di Key1
 		GUI_Text(10, 20, (uint8_t *) "Statistics sent through CAN1!", Red, White);
 	}
 		
@@ -62,13 +62,14 @@ void CAN_IRQHandler (void)  {
 		
 		GUI_Text(10, 140, (uint8_t *) "Remaining lives:", Red, White);
 		intToCharArray(rl,text);
-		GUI_Text(100, 140, (uint8_t *) text, Red, White);
+		GUI_Text(200, 140, (uint8_t *) text, Red, White);
 		
 		GUI_Text(10, 180, (uint8_t *) "Remaining time:", Red, White);
 		intToCharArray(rt,text);
-		GUI_Text(100, 180, (uint8_t *) text, Red, White);
+		GUI_Text(200, 180, (uint8_t *) text, Red, White);
 	}
 	if (icr & (1 << 1)) {                         /* CAN Controller #2 meassage is transmitted */
 		// do nothing, can't send through can 2
+		LCD_Clear(Red);//DEBUG
 	}
 }

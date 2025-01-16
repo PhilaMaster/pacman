@@ -263,6 +263,7 @@ void victory(){
 }
 
 void gameOver(){
+	remainingLives=0;
 	fermaTempo();
 	pause=true;//fermo musica
 	disable_timer(1);//fermo personaggio

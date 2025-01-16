@@ -72,7 +72,7 @@ int main(void)
 	
 	//bus can
 	CAN_Init();
-	NVIC_EnableIRQ(EINT1_IRQn);//disable key1 until end of the game (used to send statistics)
+	NVIC_DisableIRQ(EINT1_IRQn);//disable key1 until end of the game (used to send statistics)
 	
   while (1)	
   {

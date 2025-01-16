@@ -4,7 +4,7 @@
 
 //Default: 1.65
 #define SPEEDUP 1.65
-#define VOLUME 50
+#define VOLUME 125
 #define TIMERSCALER 1
 
 #define SECOND 0x17D7840 * TIMERSCALER

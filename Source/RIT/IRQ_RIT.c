@@ -247,6 +247,7 @@ if(down_1 !=0){
 	if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){
 		switch(down_1){
 			case 2:
+				LCD_Clear(Black);
 				sendStatistics();
 				disable_RIT();//dopo aver inviato le statistiche fermo tutto
 				return;
@@ -342,13 +343,13 @@ void sendStatistics(){
 	CAN_TxMsg.data[2] = (uint8_t) remainingLives;
 	
 	//REMAINING TIME in fourth byte
-	CAN_TxMsg.data[2] = (uint8_t) remainingTime;
+	CAN_TxMsg.data[3] = (uint8_t) remainingTime;
 	
 	CAN_TxMsg.len = 4;
-	CAN_TxMsg.id = 1;
+	CAN_TxMsg.id = 2;
 	CAN_TxMsg.format = STANDARD_FORMAT;
 	CAN_TxMsg.type = DATA_FRAME;
-	CAN_wrMsg (2, &CAN_TxMsg);               /* transmit message */
+	CAN_wrMsg (1, &CAN_TxMsg);// send from CAN1 to CAN2
 }
 
 /******************************************************************************
