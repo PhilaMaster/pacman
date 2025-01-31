@@ -1,24 +1,40 @@
-# Progetto Pacman
-Questo progetto è un'implementazione del gioco Pac-Man, sviluppato come parte del corso di Architetture dei Sistemi di Elaborazione. Il gioco è stato sviluppato per la scheda LandTiger, con un focus sull'implementazione della logica di gioco e sulla gestione delle risorse hardware limitate del dispositivo.
+# Pac-Man Project
+This project is an implementation of the Pac-Man game, developed as part of the "Architetture dei Sistemi Di Elaborazione" course. The game was developed for the LandTiger board, focusing on implementing game logic and managing the device's limited hardware resources.
 
-<b>Schermata del gioco eseguito sul simulatore:</b>
+**Game screen running on the simulator:**
 ![image](https://github.com/user-attachments/assets/a9315584-7677-494f-ac67-b92c433764b9)
 
+## Requirements
+- **Keil µVision:** Used for programming and debugging the project.
+- **LandTiger Board:** Used to test the project on the real device, if physically available.
+- To ensure proper random map generation, it is recommended to set the potentiometer to any position except the maximum. Otherwise, low noise may cause the same pills generation multiple times.
 
-# Requisiti
-<ul>
-<li><b>Keil µVision:</b> Per la programmazione e il debugging del progetto.</li>
-<li>LandTiger Board:</b> Per testare il progetto sul dispositivo reale, se disponibile fisicamente. </li>
-<li>Affinché sia assicurato la corretta generazione casuale della mappa è consigliato impostare il potenziometro in una qualsiasi posizione tranne quella massima (in quel caso il poco rumore potrebbe portare alla stessa generazione più volte)</li>
-</ul>
+## Game Specifications
+- **Maze:** The maze consists of 240 standard pills and 6 Power Pills generated in random positions. The Power Pills replace the standard ones.
+- **Pac-Man Movement:** The player can move Pac-Man using the joystick to choose a direction. The movement continues until hitting a wall or selecting a new direction.
+- **Score and Lives:** Each standard pill grants 10 points, while each Power Pill gives 50 points. Every 1000 points earned grants the player an extra life.
+- **Teleportation:** When Pac-Man reaches the teleportation zone, he can cross the maze from one side to the other while maintaining the same direction.
+- **Pause and Countdown:** The game starts in "PAUSE" mode. It can be paused and resumed using the INT0 button. Additionally, a countdown timer starts from 60 seconds.
+- **Game Over Conditions:** If Pac-Man eats all the pills, a "Victory" screen is displayed. If the timer runs out before all pills are eaten, a "Game Over" message is shown.
 
-# Specifiche del Gioco
-<ul>
-  <li><b>Labirinto:</b> Il labirinto è composto da 240 pillole standard e 6 pillole Power Pills generate in posizioni casuali. Le pillole Power Pills sostituiscono quelle standard.</li>
-  <li><b>Movimento di Pac-Man:</b> Il giocatore può spostare Pac-Man tramite il joystick, scegliendo la direzione. Il movimento continua fino a quando non si incontra un muro o il giocatore sceglie una nuova direzione.</li>
-  <li><b>Punteggio e Vite:</b> Ogni volta che Pac-Man mangia una pillola standard, guadagna 10 punti, mentre ogni Power Pill gli dà 50 punti. Ogni 1000 punti guadagnati, il giocatore ottiene una nuova vita.</li>
-  <li><b>Teletrasporto:</b> Quando Pac-Man raggiunge la zona di teletrasporto, può attraversare il labirinto da un lato all'altro mantenendo la stessa direzione.</li>
-  <li><b>Pause e Countdown:</b> Il gioco inizia in modalità "PAUSE". È possibile mettere in pausa e riprendere il gioco tramite il pulsante INT0. Inoltre, c'è un timer che parte da 60 secondi.</li>
-  <li><b>Condizioni di Fine Gioco:</b> Se Pac-Man mangia tutte le pillole, viene visualizzata una schermata di "Vittoria". Se il timer scade prima che tutte le pillole siano mangiate, viene mostrato un     messaggio di "Game Over".</li>
+## Additional Features
+- **AI-Controlled Ghost:**
+  - A ghost named Blinky (Red) pursues Pac-Man, causing him to lose a life on contact.
+  - Blinky's AI features two behavior modes:
+    1. **Chase Mode:** The ghost actively tries to catch Pac-Man.
+    2. **Frightened Mode:** Activated when Pac-Man eats a Power Pill. The ghost turns blue for 10 seconds, runs away, and can be eaten for an extra 100 points. If eaten, it respawns in its central spawning point after 3 seconds.
+  - The ghost's AI is implemented using a Breadth-first Search to determine the shortest path to its target.
 
-</ul>
+- **Sound Effects and Music:**
+  - The speaker is configured to play sound effects and background music during gameplay.
+
+- **CAN Bus Integration:**
+  - The CAN peripheral is used to display the current score, remaining lives, and countdown timer at the end of the game, after clicking KEY1.
+  - The LandTiger Board's CAN controllers is set to external "loopback" mode. This means that CAN1 sends messages while CAN2 receives them, simulating communication with another board.
+  - The message is encoded as follows:
+    - **Remaining Time:** 8 bits
+    - **Remaining Lives:** 8 bits
+    - **Score:** 16 bits
+  - Every message is stored in a 32-bit unsigned integer variable.
+
+
